@@ -2,5 +2,8 @@
 from .base import BaseAgent
 from .registry import AgentRegistry
 
-__all__ = ['BaseAgent', 'AgentRegistry']
+# Import specialized agents
+from .specialized.echo_agent import EchoAgent
+
+__all__ = ['BaseAgent', 'AgentRegistry', 'EchoAgent']
 
