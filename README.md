@@ -88,8 +88,10 @@ orchestrator-ai/
 ├── config/                   # Configuration
 │   ├── __init__.py
 │   └── settings.py          # Settings management ✅
-├── cli/                      # CLI tools (pending)
-│   └── __init__.py
+├── cli/                      # CLI tools
+│   ├── __init__.py
+│   ├── main.py              # CLI main with Click ✅
+│   └── client.py            # API client ✅
 ├── tests/                    # Tests
 │   ├── __init__.py
 │   ├── unit/                # Unit tests
@@ -401,10 +403,10 @@ MIT License
   - [x] Data access layer (Repositories, Query optimization)
   - [x] Alembic migrations
   
-- [ ] **Week 24-25**: CLI Tool
-  - [ ] CLI framework
-  - [ ] CLI commands
-  - [ ] CLI client
+- [x] **Week 24-25**: CLI Tool ✅
+  - [x] CLI framework (Click-based)
+  - [x] CLI commands (submit, status, result, list, cancel, generate, health)
+  - [x] CLI client (API client with error handling and output formatting)
   
 - [ ] **Week 26**: Specialized Agents
   - [ ] Code generation agent
@@ -437,10 +439,11 @@ MIT License
   - ✅ Week 17-18: Monitoring & Observability (Prometheus metrics, Distributed tracing, Health checks, Dashboard)
   - ✅ Week 19: Performance Optimization (Caching, Connection pooling, Async optimization)
 
-- ✅ **Phase 4 (Week 20-23) Progress**: Security & Authentication + Database & Persistence เสร็จสมบูรณ์แล้ว! 🎉
+- ✅ **Phase 4 (Week 20-25) Progress**: Security & Authentication + Database & Persistence + CLI Tool เสร็จสมบูรณ์แล้ว! 🎉
   - ✅ Week 20-21: Security & Authentication (API Key/JWT, RBAC, Rate limiting, Validation, Encryption)
   - ✅ Week 22-23: Database & Persistence (PostgreSQL, SQLAlchemy models, Repositories, Query optimization, Alembic)
+  - ✅ Week 24-25: CLI Tool (Click framework, All commands, API client with formatting)
 
-- 🎯 **Next**: Phase 4 Week 24-25 - CLI Tool
-- 📦 Latest Commit: `808d6bf` - Phase 4 Week 22-23: Database & Persistence - Complete
+- 🎯 **Next**: Phase 4 Week 26 - Specialized Agents
+- 📦 Latest Commit: `4acfedf` - Phase 4 Week 24-25: CLI Tool - Complete
 
