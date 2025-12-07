@@ -42,6 +42,34 @@ async def lifespan(app: FastAPI):
     # Initialize orchestrator
     registry = AgentRegistry()
     state_store = StateStore()
+    
+    # Register specialized agents
+    try:
+        from agents.specialized import EchoAgent, CodeGenerationAgent, ResearchAgent, AnalysisAgent
+        
+        # Register EchoAgent (for testing)
+        echo_agent = EchoAgent()
+        registry.register(echo_agent)
+        logger.info("EchoAgent registered")
+        
+        # Register CodeGenerationAgent
+        code_agent = CodeGenerationAgent()
+        registry.register(code_agent)
+        logger.info("CodeGenerationAgent registered")
+        
+        # Register ResearchAgent
+        research_agent = ResearchAgent()
+        registry.register(research_agent)
+        logger.info("ResearchAgent registered")
+        
+        # Register AnalysisAgent
+        analysis_agent = AnalysisAgent()
+        registry.register(analysis_agent)
+        logger.info("AnalysisAgent registered")
+        
+    except Exception as e:
+        logger.warning("Failed to register some agents", error=str(e))
+    
     _orchestrator = OrchestratorEngine(registry=registry, state_store=state_store)
     
     # Set orchestrator in routes

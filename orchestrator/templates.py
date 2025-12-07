@@ -158,6 +158,52 @@ WORKFLOW_TEMPLATES: Dict[str, Dict[str, Any]] = {
                 'estimated_cost': 0.001
             }
         ]
+    },
+    
+    # Direct task type mappings for specialized agents
+    'code_generation': {
+        'description': 'Generate code using CodeGenerationAgent',
+        'steps': [
+            {
+                'step_id': 'generate_code',
+                'agent_type': 'code_generation_agent',
+                'capabilities_required': ['code_generation'],
+                'depends_on': [],
+                'output_key': 'generated_code',
+                'estimated_time': 120,
+                'estimated_cost': 0.02
+            }
+        ]
+    },
+    
+    'research': {
+        'description': 'Research information using ResearchAgent',
+        'steps': [
+            {
+                'step_id': 'research',
+                'agent_type': 'research_agent',
+                'capabilities_required': ['web_search', 'information_aggregation'],
+                'depends_on': [],
+                'output_key': 'research_results',
+                'estimated_time': 60,
+                'estimated_cost': 0.01
+            }
+        ]
+    },
+    
+    'analysis': {
+        'description': 'Analyze data using AnalysisAgent',
+        'steps': [
+            {
+                'step_id': 'analyze',
+                'agent_type': 'analysis_agent',
+                'capabilities_required': ['data_analysis', 'pattern_recognition'],
+                'depends_on': [],
+                'output_key': 'analysis_results',
+                'estimated_time': 30,
+                'estimated_cost': 0.005
+            }
+        ]
     }
 }
 
@@ -194,6 +240,12 @@ def match_template(task_type: str) -> Optional[str]:
     
     if 'code' in task_lower or ('generate' in task_lower and 'code' in task_lower):
         return 'code_generation'
+    
+    if 'research' in task_lower:
+        return 'research'
+    
+    if 'analysis' in task_lower or 'analyze' in task_lower:
+        return 'analysis'
     
     if 'process' in task_lower and 'data' in task_lower:
         return 'data_processing'

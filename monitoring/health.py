@@ -185,9 +185,10 @@ class SystemHealthChecker:
             )
         
         agents = self.registry.list_agents()
+        # list_agents() returns List[Dict[str, Any]]
         active_agents = [
             agent for agent in agents
-            if agent.status == 'active'
+            if isinstance(agent, dict) and agent.get('status') == 'active'
         ]
         
         total = len(agents)

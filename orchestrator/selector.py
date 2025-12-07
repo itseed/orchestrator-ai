@@ -147,7 +147,9 @@ class AgentSelector:
             agent = agent_entry['agent']
             if isinstance(agent, BaseAgent):
                 # Check if agent type matches
-                if agent.agent_id.startswith(step.agent_type) or \
+                # Match by exact agent_id, or if agent_id starts with agent_type, or if agent_type is in capabilities
+                if agent.agent_id == step.agent_type or \
+                   agent.agent_id.startswith(step.agent_type) or \
                    step.agent_type in agent.capabilities:
                     if self._is_suitable(agent, step):
                         candidates.append(agent)
@@ -173,10 +175,16 @@ class AgentSelector:
         if agent.status != 'active':
             return False
         
-        # Check capabilities
+        # Check capabilities - agent must have at least one required capability
+        # OR if agent_id matches agent_type, it's automatically suitable
+        if agent.agent_id == step.agent_type or agent.agent_id.startswith(step.agent_type):
+            return True
+        
+        # Check if agent has any of the required capabilities
         required_capabilities = self._extract_required_capabilities(step)
-        for capability in required_capabilities:
-            if not agent.has_capability(capability):
+        if required_capabilities and required_capabilities != ['generic']:
+            # Agent must have at least one required capability
+            if not any(agent.has_capability(cap) for cap in required_capabilities):
                 return False
         
         return True
