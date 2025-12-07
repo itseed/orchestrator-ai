@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orchestrator-postgres
+spec:
+  serviceName: orchestrator-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestrator-postgres
+  template:
+    metadata:
+      labels:
+        app: orchestrator-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_USER
+          value: "orchestrator"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: orchestrator-secrets
+              key: postgres-password
+        - name: POSTGRES_DB
+          value: "orchestrator"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestrator-postgres
+spec:
+  clusterIP: None
+  selector:
+    app: orchestrator-postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgres
+
