@@ -26,6 +26,8 @@ class CodeGenerationAgent(BaseAgent):
             description="Generates code files based on requirements and project context"
         )
         self.openai_api_key = settings.OPENAI_API_KEY
+        self.anthropic_api_key = settings.ANTHROPIC_API_KEY
+        self.gemini_api_key = settings.GOOGLE_GEMINI_API_KEY
         logger.info("CodeGenerationAgent initialized")
     
     async def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
@@ -103,16 +105,8 @@ class CodeGenerationAgent(BaseAgent):
         Returns:
             Generated code
         """
-        # Simplified code generation
-        # In production, integrate with OpenAI/Anthropic API
-        
-        if self.openai_api_key:
-            # Use OpenAI API if available
-            try:
-                import openai
-                client = openai.OpenAI(api_key=self.openai_api_key)
-                
-                prompt = f"""Generate {language} code for the following requirement:
+        # Try different LLM providers in order of preference
+        prompt = f"""Generate {language} code for the following requirement:
 
 {description}
 
@@ -121,6 +115,29 @@ File path: {file_path}
 Context: {context if context else 'No additional context'}
 
 Generate complete, production-ready code with proper documentation."""
+        
+        # Try Google Gemini first (if available)
+        if self.gemini_api_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=self.gemini_api_key)
+                model = genai.GenerativeModel('gemini-pro')
+                
+                full_prompt = f"You are an expert {language} developer.\n\n{prompt}"
+                response = model.generate_content(full_prompt)
+                
+                if response and response.text:
+                    return response.text
+            except ImportError:
+                logger.warning("google-generativeai package not installed. Install with: pip install google-generativeai")
+            except Exception as e:
+                logger.warning("Google Gemini API call failed, trying other providers", error=str(e))
+        
+        # Try OpenAI if available
+        if self.openai_api_key:
+            try:
+                import openai
+                client = openai.OpenAI(api_key=self.openai_api_key)
                 
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -133,7 +150,28 @@ Generate complete, production-ready code with proper documentation."""
                 
                 return response.choices[0].message.content
             except Exception as e:
-                logger.warning("OpenAI API call failed, using fallback", error=str(e))
+                logger.warning("OpenAI API call failed, trying other providers", error=str(e))
+        
+        # Try Anthropic if available
+        if self.anthropic_api_key:
+            try:
+                import anthropic
+                client = anthropic.Anthropic(api_key=self.anthropic_api_key)
+                
+                message = client.messages.create(
+                    model="claude-3-opus-20240229",
+                    max_tokens=4096,
+                    system=f"You are an expert {language} developer.",
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                
+                return message.content[0].text
+            except ImportError:
+                logger.warning("anthropic package not installed. Install with: pip install anthropic")
+            except Exception as e:
+                logger.warning("Anthropic API call failed, using fallback", error=str(e))
         
         # Fallback: Generate template code
         return self._generate_template_code(description, language, file_path)

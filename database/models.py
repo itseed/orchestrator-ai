@@ -82,7 +82,7 @@ class AgentModel(Base):
     agent_type = Column(String, nullable=False, index=True)
     status = Column(String, nullable=False, default="inactive", index=True)
     capabilities = Column(JSON, nullable=False, default=list)
-    metadata = Column(JSON, nullable=True)
+    agent_metadata = Column(JSON, nullable=True)  # Renamed from 'metadata' (SQLAlchemy reserved)
     endpoint = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
@@ -108,7 +108,7 @@ class StateSnapshotModel(Base):
     step_id = Column(String, nullable=True)
     state_data = Column(JSON, nullable=False)
     version = Column(Integer, nullable=False)
-    metadata = Column(JSON, nullable=True)
+    snapshot_metadata = Column(JSON, nullable=True)  # Renamed from 'metadata' (SQLAlchemy reserved)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     
     # Relationship

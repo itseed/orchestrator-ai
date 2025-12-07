@@ -49,6 +49,7 @@ class Settings(BaseSettings):
     # LLM Configuration (for agents)
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
+    GOOGLE_GEMINI_API_KEY: Optional[str] = None
     
     # Environment
     ENVIRONMENT: str = "development"  # development, staging, production

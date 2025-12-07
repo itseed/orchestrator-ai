@@ -7,10 +7,13 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from config import settings
-from monitoring import get_logger, start_metrics_server, SystemHealthChecker, MonitoringDashboard, create_dashboard_routes
+from monitoring import get_logger, start_metrics_server
+from monitoring.health import SystemHealthChecker, HealthStatus
+from monitoring.dashboard import MonitoringDashboard, create_dashboard_routes
 from orchestrator.engine import OrchestratorEngine
 from agents.registry import AgentRegistry
 from state.store import StateStore
+from database.base import init_database, create_tables
 from api import routes
 
 logger = get_logger(__name__)
@@ -26,6 +29,15 @@ async def lifespan(app: FastAPI):
     
     # Startup
     logger.info("Starting Orchestrator AI Agent API", version=settings.API_VERSION)
+    
+    # Initialize database
+    try:
+        init_database()
+        if settings.DATABASE_URL:  # Only create tables if database is configured
+            create_tables()
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.warning("Database initialization failed, continuing without persistence", error=str(e))
     
     # Initialize orchestrator
     registry = AgentRegistry()

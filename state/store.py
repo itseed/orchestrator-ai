@@ -5,6 +5,7 @@ Supports both in-memory and Redis-based storage
 """
 
 import json
+import asyncio
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from monitoring import get_logger
@@ -18,6 +19,7 @@ class StateStore:
     def __init__(self):
         """Initialize state store"""
         self.states: Dict[str, Dict[str, Any]] = {}
+        self._lock = asyncio.Lock()
         logger.info("StateStore initialized (in-memory)")
     
     def save_state(
@@ -27,7 +29,10 @@ class StateStore:
         version: Optional[int] = None
     ) -> int:
         """
-        Save workflow state
+        Save workflow state (synchronous, thread-safe for single-threaded async)
+        
+        Note: For true thread-safety in multi-threaded environments,
+        use RedisStateStore instead.
         
         Args:
             workflow_id: Workflow ID
@@ -66,6 +71,54 @@ class StateStore:
         )
         
         return version
+    
+    async def save_state_async(
+        self,
+        workflow_id: str,
+        state: Dict[str, Any],
+        version: Optional[int] = None
+    ) -> int:
+        """
+        Save workflow state (async, thread-safe)
+        
+        Args:
+            workflow_id: Workflow ID
+            state: State dictionary
+            version: Optional version number (auto-increment if not provided)
+            
+        Returns:
+            Version number of saved state
+        """
+        async with self._lock:
+            if workflow_id not in self.states:
+                self.states[workflow_id] = {
+                    'workflow_id': workflow_id,
+                    'versions': {},
+                    'current_version': 0,
+                    'created_at': datetime.utcnow().isoformat()
+                }
+            
+            workflow_states = self.states[workflow_id]
+            
+            # Auto-increment version
+            if version is None:
+                version = workflow_states['current_version'] + 1
+            
+            workflow_states['versions'][version] = {
+                'state': state,
+                'version': version,
+                'created_at': datetime.utcnow().isoformat()
+            }
+            
+            workflow_states['current_version'] = version
+            
+            logger.debug(
+                "State saved",
+                workflow_id=workflow_id,
+                version=version
+            )
+            
+            return version
     
     def get_state(
         self,

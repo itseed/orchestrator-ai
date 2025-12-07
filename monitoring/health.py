@@ -4,11 +4,13 @@ System and agent health monitoring
 """
 
 import asyncio
-from typing import Dict, Any, List, Optional, Callable
+from typing import Dict, Any, List, Optional, Callable, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
 from monitoring import get_logger
-from agents.registry import AgentRegistry
+
+if TYPE_CHECKING:
+    from agents.registry import AgentRegistry
 
 logger = get_logger(__name__)
 
@@ -62,7 +64,7 @@ class HealthMonitor:
     
     def __init__(
         self,
-        registry: Optional[AgentRegistry] = None
+        registry: Optional['AgentRegistry'] = None
     ):
         """
         Initialize health monitor
@@ -140,7 +142,7 @@ class SystemHealthChecker:
     
     def __init__(
         self,
-        registry: Optional[AgentRegistry] = None,
+        registry: Optional['AgentRegistry'] = None,
         state_store: Optional[Any] = None,
         message_broker: Optional[Any] = None
     ):

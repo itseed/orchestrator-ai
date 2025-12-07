@@ -25,6 +25,8 @@ class ResearchAgent(BaseAgent):
             description="Researches information from web and aggregates sources"
         )
         self.openai_api_key = settings.OPENAI_API_KEY
+        self.anthropic_api_key = settings.ANTHROPIC_API_KEY
+        self.gemini_api_key = settings.GOOGLE_GEMINI_API_KEY
         logger.info("ResearchAgent initialized")
     
     async def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
@@ -169,23 +171,41 @@ class ResearchAgent(BaseAgent):
         if not results:
             return f"No results found for query: {query}"
         
-        # Use LLM to summarize if available
-        if self.openai_api_key:
-            try:
-                import openai
-                client = openai.OpenAI(api_key=self.openai_api_key)
-                
-                results_text = "\n\n".join([
-                    f"Title: {r.get('title', 'N/A')}\nSnippet: {r.get('snippet', r.get('abstract', 'N/A'))}"
-                    for r in results[:5]
-                ])
-                
-                prompt = f"""Summarize the following research results for the query: "{query}"
+        # Use LLM to summarize if available (try multiple providers)
+        results_text = "\n\n".join([
+            f"Title: {r.get('title', 'N/A')}\nSnippet: {r.get('snippet', r.get('abstract', 'N/A'))}"
+            for r in results[:5]
+        ])
+        
+        prompt = f"""Summarize the following research results for the query: "{query}"
 
 Results:
 {results_text}
 
 Provide a comprehensive summary."""
+        
+        # Try Google Gemini first
+        if self.gemini_api_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=self.gemini_api_key)
+                model = genai.GenerativeModel('gemini-pro')
+                
+                full_prompt = "You are a research assistant that summarizes information.\n\n" + prompt
+                response = model.generate_content(full_prompt)
+                
+                if response and response.text:
+                    return response.text
+            except ImportError:
+                logger.warning("google-generativeai package not installed")
+            except Exception as e:
+                logger.warning("Google Gemini API call failed, trying other providers", error=str(e))
+        
+        # Try OpenAI
+        if self.openai_api_key:
+            try:
+                import openai
+                client = openai.OpenAI(api_key=self.openai_api_key)
                 
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -198,7 +218,26 @@ Provide a comprehensive summary."""
                 
                 return response.choices[0].message.content
             except Exception as e:
-                logger.warning("OpenAI API call failed, using fallback", error=str(e))
+                logger.warning("OpenAI API call failed, trying other providers", error=str(e))
+        
+        # Try Anthropic
+        if self.anthropic_api_key:
+            try:
+                import anthropic
+                client = anthropic.Anthropic(api_key=self.anthropic_api_key)
+                
+                message = client.messages.create(
+                    model="claude-3-opus-20240229",
+                    max_tokens=2048,
+                    system="You are a research assistant that summarizes information.",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                
+                return message.content[0].text
+            except ImportError:
+                logger.warning("anthropic package not installed")
+            except Exception as e:
+                logger.warning("Anthropic API call failed, using fallback", error=str(e))
         
         # Fallback: Simple summary
         return f"Found {len(results)} results for query: {query}. Key topics include: {', '.join([r.get('title', '')[:50] for r in results[:3]])}"

@@ -155,7 +155,7 @@ class CircuitBreaker:
         Execute function with circuit breaker protection
         
         Args:
-            func: Function to execute
+            func: Function to execute (must be synchronous)
             *args: Positional arguments
             **kwargs: Keyword arguments
             
@@ -164,9 +164,16 @@ class CircuitBreaker:
             
         Raises:
             CircuitBreakerOpenError if circuit is open
+            ValueError if async function is passed (use call_async instead)
             Original exception if call fails
         """
         import asyncio
+        
+        # Check if function is async
+        if asyncio.iscoroutinefunction(func):
+            raise ValueError(
+                f"Async function passed to sync call(). Use call_async() instead for '{self.name}'"
+            )
         
         # Try to transition to half-open if needed
         self._try_half_open()
@@ -188,13 +195,7 @@ class CircuitBreaker:
         
         # Execute function
         try:
-            if asyncio.iscoroutinefunction(func):
-                # For async functions, we need to use async context
-                # This is a sync wrapper, so we'll handle it differently
-                result = func(*args, **kwargs)
-            else:
-                result = func(*args, **kwargs)
-            
+            result = func(*args, **kwargs)
             self.record_success()
             return result
             

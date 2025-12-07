@@ -25,6 +25,8 @@ class AnalysisAgent(BaseAgent):
             description="Analyzes data and generates insights"
         )
         self.openai_api_key = settings.OPENAI_API_KEY
+        self.anthropic_api_key = settings.ANTHROPIC_API_KEY
+        self.gemini_api_key = settings.GOOGLE_GEMINI_API_KEY
         logger.info("AnalysisAgent initialized")
     
     async def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
@@ -251,18 +253,39 @@ class AnalysisAgent(BaseAgent):
         """
         insights = []
         
-        # Use LLM if available
-        if self.openai_api_key:
-            try:
-                import openai
-                client = openai.OpenAI(api_key=self.openai_api_key)
-                
-                prompt = f"""Based on the following analysis results, generate key insights:
+        # Use LLM if available (try multiple providers)
+        prompt = f"""Based on the following analysis results, generate key insights:
 
 Analysis Results:
 {json.dumps(analysis_result, indent=2)[:1000]}
 
 Provide 3-5 key insights in bullet points."""
+        
+        # Try Google Gemini first
+        if self.gemini_api_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=self.gemini_api_key)
+                model = genai.GenerativeModel('gemini-pro')
+                
+                full_prompt = "You are a data analyst that generates insights.\n\n" + prompt
+                response = model.generate_content(full_prompt)
+                
+                if response and response.text:
+                    insights_text = response.text
+                    insights = [line.strip("- ") for line in insights_text.split("\n") if line.strip()]
+                    if insights:
+                        return insights
+            except ImportError:
+                logger.warning("google-generativeai package not installed")
+            except Exception as e:
+                logger.warning("Google Gemini API call failed, trying other providers", error=str(e))
+        
+        # Try OpenAI
+        if self.openai_api_key:
+            try:
+                import openai
+                client = openai.OpenAI(api_key=self.openai_api_key)
                 
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -275,8 +298,32 @@ Provide 3-5 key insights in bullet points."""
                 
                 insights_text = response.choices[0].message.content
                 insights = [line.strip("- ") for line in insights_text.split("\n") if line.strip()]
+                if insights:
+                    return insights
             except Exception as e:
-                logger.warning("OpenAI API call failed, using fallback", error=str(e))
+                logger.warning("OpenAI API call failed, trying other providers", error=str(e))
+        
+        # Try Anthropic
+        if self.anthropic_api_key:
+            try:
+                import anthropic
+                client = anthropic.Anthropic(api_key=self.anthropic_api_key)
+                
+                message = client.messages.create(
+                    model="claude-3-opus-20240229",
+                    max_tokens=1024,
+                    system="You are a data analyst that generates insights.",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                
+                insights_text = message.content[0].text
+                insights = [line.strip("- ") for line in insights_text.split("\n") if line.strip()]
+                if insights:
+                    return insights
+            except ImportError:
+                logger.warning("anthropic package not installed")
+            except Exception as e:
+                logger.warning("Anthropic API call failed, using fallback", error=str(e))
         
         # Fallback insights
         if not insights:

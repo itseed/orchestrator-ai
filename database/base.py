@@ -114,6 +114,7 @@ def create_tables():
     logger.info("Database tables created")
 
 
-# Initialize on module import
-init_database()
+# Initialize on module import (only if DATABASE_URL is set)
+# Commented out to avoid initialization errors during testing
+# init_database()
 

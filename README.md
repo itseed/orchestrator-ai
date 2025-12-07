@@ -285,7 +285,11 @@ class MyCustomAgent(BaseAgent):
 ## Architecture Overview
 
 ดูเอกสารเพิ่มเติมได้ที่:
-- [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md) - **แผนการพัฒนาแบบละเอียด** ⭐
+- [docs/README.md](docs/README.md) - **เอกสารทั้งหมด** ⭐
+- [docs/USER_GUIDE.md](docs/USER_GUIDE.md) - **คู่มือการใช้งาน** ⭐ (ภาษาไทย)
+- [docs/USER_GUIDE_EN.md](docs/USER_GUIDE_EN.md) - **User Guide** ⭐ (English)
+- [docs/development/README_DEVELOPMENT.md](docs/development/README_DEVELOPMENT.md) - Quick development start
+- [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md) - แผนการพัฒนาแบบละเอียด
 - [docs/DESIGN.md](docs/DESIGN.md) - เอกสารออกแบบระบบ
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - เอกสารสถาปัตยกรรม
 - [docs/WORKFLOW_EXAMPLES.md](docs/WORKFLOW_EXAMPLES.md) - ตัวอย่าง workflow
