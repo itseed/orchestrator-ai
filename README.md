@@ -29,24 +29,27 @@ orchestrator-ai/
 │   ├── selector.py          # Agent selector ✅
 │   ├── executor.py          # Workflow executor ✅
 │   ├── templates.py         # Workflow templates ✅
-│   └── resource_estimator.py # Resource estimation ✅
+│   ├── resource_estimator.py # Resource estimation ✅
+│   └── workflow_chain.py    # Workflow chaining ✅
 ├── agents/                   # Agent implementations
 │   ├── __init__.py
 │   ├── base.py              # Base agent class ✅
 │   ├── registry.py          # Agent registry ✅
+│   ├── communication.py     # Agent communication ✅
 │   └── specialized/         # Specialized agents
 │       ├── __init__.py
 │       ├── echo_agent.py    # Echo agent for testing ✅
 │       ├── research_agent.py (pending)
 │       └── code_agent.py    (pending)
-├── messaging/                # Message broker (pending)
+├── messaging/                # Message broker
 │   ├── __init__.py
-│   ├── broker.py
-│   └── message.py
+│   ├── broker.py            # Message broker ✅
+│   └── message.py           # Message protocol ✅
 ├── state/                    # State management
 │   ├── __init__.py
 │   ├── store.py             # State store ✅
-│   └── snapshot.py          (pending)
+│   ├── redis_store.py       # Redis state store ✅
+│   └── snapshot.py          # State snapshots ✅
 ├── api/                      # API layer
 │   ├── __init__.py
 │   ├── main.py              # FastAPI app ✅
@@ -184,12 +187,16 @@ result = await orchestrator.execute(task)
 - ✅ Task Planning & Workflow Decomposition
 - ✅ Resource Estimation
 - ✅ Agent Selection (Core, Load Balancing, Cost Optimization)
-- ✅ Workflow Executor (Sequential Execution)
-- ✅ State Management (Basic In-Memory)
+- ✅ Workflow Executor (Sequential & Parallel Execution)
+- ✅ State Management (In-Memory & Redis-based with Snapshots)
 - ✅ Orchestrator Engine (Complete Integration)
 - ✅ REST API (Basic: POST/GET Tasks)
+- ✅ Message Broker (Redis-based with Request-Response, Pub-Sub, Event-Driven)
+- ✅ Parallel Execution (Fan-out/Fan-in, Conditional Routing)
+- ✅ Agent Communication (Direct, Mediated, Broadcast)
+- ✅ Workflow Chaining & Pipeline Support
 
-**Phase 1: Core Orchestrator Engine - เสร็จสมบูรณ์แล้ว!** 🎉
+**Phase 1 & Phase 2: Core Orchestrator & Multi-Agent Support - เสร็จสมบูรณ์แล้ว!** 🎉
 
 ### API Usage
 
@@ -309,11 +316,29 @@ MIT License
   - [x] REST API (POST/GET tasks)
   - [x] Task lifecycle management
 
-### Phase 2: Multi-Agent Support (6-8 สัปดาห์) - 📅 Planned
-- [ ] Message Broker & Communication
-- [ ] Parallel Execution
-- [ ] State Management
-- [ ] Agent Communication
+### Phase 2: Multi-Agent Support (6-8 สัปดาห์) - ✅ Complete
+
+- [x] **Week 7-8**: Message Broker & Communication ✅
+  - [x] Redis-based MessageBroker
+  - [x] Message Protocol (Task, Response, Status, Event)
+  - [x] Request-Response pattern
+  - [x] Event-Driven pattern
+  - [x] Pub-Sub pattern
+  
+- [x] **Week 9-10**: Parallel Execution ✅
+  - [x] Parallel workflow support
+  - [x] Fan-out/Fan-in patterns
+  - [x] Conditional routing & branching
+  
+- [x] **Week 11-12**: State Management ✅
+  - [x] Redis-based state store
+  - [x] Distributed locking
+  - [x] State snapshots & recovery
+  
+- [x] **Week 13-14**: Agent Communication ✅
+  - [x] Agent-to-Agent communication
+  - [x] Workflow chaining
+  - [x] Event system
 
 ### Phase 3: Advanced Features (4-6 สัปดาห์) - 📅 Planned
 - [ ] Error Recovery & Resilience
@@ -338,6 +363,13 @@ MIT License
   - ✅ Week 4: Agent Selector (Core, Load Balancing, Cost Optimization)
   - ✅ Week 5: Workflow Executor & State Management
   - ✅ Week 6: Orchestrator Engine & REST API
-- 🎯 **Next Phase**: Phase 2 - Multi-Agent Support (Message Broker, Parallel Execution)
-- 📦 Latest Commit: `32389da` - Fix missing List import in state/store.py
+
+- ✅ **Phase 2 Complete**: Week 7-14 เสร็จสมบูรณ์แล้ว! 🎉
+  - ✅ Week 7-8: Message Broker & Communication (Redis-based, Request-Response, Pub-Sub, Events)
+  - ✅ Week 9-10: Parallel Execution (Parallel workflows, Fan-out/Fan-in, Conditional routing)
+  - ✅ Week 11-12: State Management (Redis store, Distributed locking, Snapshots)
+  - ✅ Week 13-14: Agent Communication (Agent-to-agent, Workflow chaining, Event system)
+
+- 🎯 **Next Phase**: Phase 3 - Advanced Features (Error Recovery, Monitoring, Performance Optimization)
+- 📦 Latest Commit: `06581fb` - Phase 2 Week 11-12: State Management - Complete
 
