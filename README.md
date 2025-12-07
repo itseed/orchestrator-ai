@@ -62,8 +62,10 @@ orchestrator-ai/
 ├── monitoring/               # Monitoring & observability
 │   ├── __init__.py
 │   ├── logger.py            # Structured logging ✅
-│   ├── metrics.py           (pending)
-│   └── dashboard.py         (pending)
+│   ├── metrics.py           # Prometheus metrics ✅
+│   ├── health.py            # Health checks ✅
+│   ├── tracing.py           # Distributed tracing ✅
+│   └── dashboard.py         # Monitoring dashboard ✅
 ├── config/                   # Configuration
 │   ├── __init__.py
 │   └── settings.py          # Settings management ✅
@@ -200,8 +202,9 @@ result = await orchestrator.execute(task)
 - ✅ Agent Communication (Direct, Mediated, Broadcast)
 - ✅ Workflow Chaining & Pipeline Support
 - ✅ Error Recovery & Resilience (Retry, Circuit Breaker, Fallback, Recovery)
+- ✅ Monitoring & Observability (Prometheus Metrics, Tracing, Health Checks, Dashboard)
 
-**Phase 1, 2 & Phase 3 (Week 15-16): Core Orchestrator, Multi-Agent Support & Error Recovery - เสร็จสมบูรณ์แล้ว!** 🎉
+**Phase 1, 2 & Phase 3 (Week 15-18): Core Orchestrator, Multi-Agent Support, Error Recovery & Monitoring - เสร็จสมบูรณ์แล้ว!** 🎉
 
 ### API Usage
 
@@ -353,11 +356,11 @@ MIT License
   - [x] Graceful degradation & fallback
   - [x] Checkpointing & recovery automation
   
-- [ ] **Week 17-18**: Monitoring & Observability
-  - [ ] Metrics collection
-  - [ ] Enhanced logging & tracing
-  - [ ] Health checks
-  - [ ] Dashboard (basic)
+- [x] **Week 17-18**: Monitoring & Observability ✅
+  - [x] Metrics collection (Prometheus integration)
+  - [x] Enhanced logging & distributed tracing
+  - [x] Health checks (System, Agents, State Store, Message Broker)
+  - [x] Dashboard (basic web dashboard with real-time updates)
   
 - [ ] **Week 19**: Performance Optimization
   - [ ] Caching strategy
@@ -389,9 +392,10 @@ MIT License
   - ✅ Week 11-12: State Management (Redis store, Distributed locking, Snapshots)
   - ✅ Week 13-14: Agent Communication (Agent-to-agent, Workflow chaining, Event system)
 
-- ✅ **Phase 3 (Week 15-16) Complete**: Error Recovery & Resilience เสร็จสมบูรณ์แล้ว! 🎉
+- ✅ **Phase 3 (Week 15-18) Complete**: Error Recovery & Resilience + Monitoring & Observability เสร็จสมบูรณ์แล้ว! 🎉
   - ✅ Week 15-16: Error Recovery & Resilience (Retry mechanisms, Circuit breaker, Graceful degradation, Recovery automation)
+  - ✅ Week 17-18: Monitoring & Observability (Prometheus metrics, Distributed tracing, Health checks, Dashboard)
 
-- 🎯 **Next**: Phase 3 Week 17-18 - Monitoring & Observability
-- 📦 Latest Commit: `94cb16e` - Phase 3 Week 15-16: Error Recovery & Resilience - Complete
+- 🎯 **Next**: Phase 3 Week 19 - Performance Optimization
+- 📦 Latest Commit: `b1e3261` - Phase 3 Week 17-18: Monitoring & Observability - Complete
 
