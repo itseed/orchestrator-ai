@@ -1,8 +1,10 @@
 """
 State Store
 Manages workflow and agent state
+Supports both in-memory and Redis-based storage
 """
 
+import json
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from monitoring import get_logger
@@ -11,12 +13,12 @@ logger = get_logger(__name__)
 
 
 class StateStore:
-    """In-memory state store for workflows"""
+    """Base state store for workflows (in-memory implementation)"""
     
     def __init__(self):
         """Initialize state store"""
         self.states: Dict[str, Dict[str, Any]] = {}
-        logger.info("StateStore initialized")
+        logger.info("StateStore initialized (in-memory)")
     
     def save_state(
         self,
