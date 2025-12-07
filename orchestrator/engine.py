@@ -43,17 +43,20 @@ class OrchestratorEngine:
         
         logger.info("OrchestratorEngine initialized")
     
-    async def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, task: Dict[str, Any], task_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Execute a task through the orchestrator
         
         Args:
             task: Task dictionary with type and input
+            task_id: Optional task ID (generates new if not provided)
             
         Returns:
             Task execution result
         """
-        task_id = str(uuid.uuid4())
+        # Use provided task_id or generate new one
+        if task_id is None:
+            task_id = str(uuid.uuid4())
         
         logger.info("Task submitted", task_id=task_id, task_type=task.get('type'))
         
@@ -188,7 +191,8 @@ class OrchestratorEngine:
             task = queued_task['task']
             
             try:
-                await self.execute(task)
+                # Pass task_id to execute to maintain consistency
+                await self.execute(task, task_id=task_id)
             except Exception as e:
                 logger.error(
                     "Failed to process queued task",
