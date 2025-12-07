@@ -197,8 +197,11 @@ class MyCustomAgent(BaseAgent):
 ## Architecture Overview
 
 ดูเอกสารเพิ่มเติมได้ที่:
-- [DESIGN.md](DESIGN.md) - เอกสารออกแบบระบบ
-- [ARCHITECTURE.md](ARCHITECTURE.md) - เอกสารสถาปัตยกรรม
+- [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) - **แผนการพัฒนาแบบละเอียด** ⭐
+- [.context/DESIGN.md](.context/DESIGN.md) - เอกสารออกแบบระบบ
+- [.context/ARCHITECTURE.md](.context/ARCHITECTURE.md) - เอกสารสถาปัตยกรรม
+- [.context/WORKFLOW_EXAMPLES.md](.context/WORKFLOW_EXAMPLES.md) - ตัวอย่าง workflow
+- [.context/QUICK_START.md](.context/QUICK_START.md) - Quick Start Guide
 
 ## การทดสอบ (Testing)
 
@@ -229,10 +232,10 @@ MIT License
 
 ## Roadmap
 
-- [ ] Phase 1: Core Orchestrator Engine
-- [ ] Phase 2: Multi-Agent Support
-- [ ] Phase 3: Advanced Features
-- [ ] Phase 4: Production Ready
+- [ ] Phase 1: Core Orchestrator Engine (4-6 สัปดาห์)
+- [ ] Phase 2: Multi-Agent Support (6-8 สัปดาห์)
+- [ ] Phase 3: Advanced Features (4-6 สัปดาห์)
+- [ ] Phase 4: Production Ready (4-6 สัปดาห์)
 
-ดู roadmap รายละเอียดใน [DESIGN.md](DESIGN.md)
+**ดูแผนการพัฒนาแบบละเอียด**: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
 
