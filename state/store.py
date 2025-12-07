@@ -3,7 +3,7 @@ State Store
 Manages workflow and agent state
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from datetime import datetime
 from monitoring import get_logger
 
