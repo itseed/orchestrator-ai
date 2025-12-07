@@ -30,7 +30,11 @@ orchestrator-ai/
 │   ├── executor.py          # Workflow executor ✅
 │   ├── templates.py         # Workflow templates ✅
 │   ├── resource_estimator.py # Resource estimation ✅
-│   └── workflow_chain.py    # Workflow chaining ✅
+│   ├── workflow_chain.py    # Workflow chaining ✅
+│   ├── retry.py             # Retry mechanisms ✅
+│   ├── circuit_breaker.py   # Circuit breaker ✅
+│   ├── degradation.py       # Graceful degradation ✅
+│   └── recovery.py          # Workflow recovery ✅
 ├── agents/                   # Agent implementations
 │   ├── __init__.py
 │   ├── base.py              # Base agent class ✅
@@ -195,8 +199,9 @@ result = await orchestrator.execute(task)
 - ✅ Parallel Execution (Fan-out/Fan-in, Conditional Routing)
 - ✅ Agent Communication (Direct, Mediated, Broadcast)
 - ✅ Workflow Chaining & Pipeline Support
+- ✅ Error Recovery & Resilience (Retry, Circuit Breaker, Fallback, Recovery)
 
-**Phase 1 & Phase 2: Core Orchestrator & Multi-Agent Support - เสร็จสมบูรณ์แล้ว!** 🎉
+**Phase 1, 2 & Phase 3 (Week 15-16): Core Orchestrator, Multi-Agent Support & Error Recovery - เสร็จสมบูรณ์แล้ว!** 🎉
 
 ### API Usage
 
@@ -340,10 +345,24 @@ MIT License
   - [x] Workflow chaining
   - [x] Event system
 
-### Phase 3: Advanced Features (4-6 สัปดาห์) - 📅 Planned
-- [ ] Error Recovery & Resilience
-- [ ] Monitoring & Observability
-- [ ] Performance Optimization
+### Phase 3: Advanced Features (4-6 สัปดาห์) - 🚧 In Progress
+
+- [x] **Week 15-16**: Error Recovery & Resilience ✅
+  - [x] Retry mechanisms (Exponential backoff, multiple strategies)
+  - [x] Circuit breaker pattern
+  - [x] Graceful degradation & fallback
+  - [x] Checkpointing & recovery automation
+  
+- [ ] **Week 17-18**: Monitoring & Observability
+  - [ ] Metrics collection
+  - [ ] Enhanced logging & tracing
+  - [ ] Health checks
+  - [ ] Dashboard (basic)
+  
+- [ ] **Week 19**: Performance Optimization
+  - [ ] Caching strategy
+  - [ ] Connection pooling
+  - [ ] Async optimization
 
 ### Phase 4: Production Ready (4-6 สัปดาห์) - 📅 Planned
 - [ ] Security & Authentication
@@ -370,6 +389,9 @@ MIT License
   - ✅ Week 11-12: State Management (Redis store, Distributed locking, Snapshots)
   - ✅ Week 13-14: Agent Communication (Agent-to-agent, Workflow chaining, Event system)
 
-- 🎯 **Next Phase**: Phase 3 - Advanced Features (Error Recovery, Monitoring, Performance Optimization)
-- 📦 Latest Commit: `06581fb` - Phase 2 Week 11-12: State Management - Complete
+- ✅ **Phase 3 (Week 15-16) Complete**: Error Recovery & Resilience เสร็จสมบูรณ์แล้ว! 🎉
+  - ✅ Week 15-16: Error Recovery & Resilience (Retry mechanisms, Circuit breaker, Graceful degradation, Recovery automation)
+
+- 🎯 **Next**: Phase 3 Week 17-18 - Monitoring & Observability
+- 📦 Latest Commit: `94cb16e` - Phase 3 Week 15-16: Error Recovery & Resilience - Complete
 
