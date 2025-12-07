@@ -43,7 +43,7 @@ def configure_logging(
     
     # Configure structlog processors
     processors = [
-        structlog.contextvars.merge_contextvars,
+        structlog.contextvars.merge_contextvars,  # Merge correlation IDs and trace context
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -52,6 +52,7 @@ def configure_logging(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.processors.UnicodeDecoder(),
+        structlog.processors.add_log_level,  # Ensure log level is included
     ]
     
     # Add JSON or console renderer based on format

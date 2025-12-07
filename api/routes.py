@@ -230,3 +230,41 @@ async def list_tasks(
     except Exception as e:
         logger.error("Failed to list tasks", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# Health check endpoints
+_health_checker: Optional[Any] = None
+
+
+def set_health_checker(health_checker: Any):
+    """Set health checker instance"""
+    global _health_checker
+    _health_checker = health_checker
+
+
+@router.get("/health")
+async def get_health() -> Dict[str, Any]:
+    """
+    Get system health status
+    
+    Returns:
+        System health status
+    """
+    if _health_checker:
+        try:
+            return await _health_checker.get_health()
+        except Exception as e:
+            logger.error("Health check failed", error=str(e))
+            return {
+                'status': 'unhealthy',
+                'error': str(e),
+                'timestamp': datetime.utcnow().isoformat()
+            }
+    
+    # Basic health check if no health checker configured
+    orchestrator = get_orchestrator()
+    return {
+        'status': 'healthy',
+        'message': 'System is operational',
+        'timestamp': datetime.utcnow().isoformat()
+    }

@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from config import settings
-from monitoring import get_logger
+from monitoring import get_logger, start_metrics_server, SystemHealthChecker, MonitoringDashboard, create_dashboard_routes
 from orchestrator.engine import OrchestratorEngine
 from agents.registry import AgentRegistry
 from state.store import StateStore
@@ -34,6 +34,26 @@ async def lifespan(app: FastAPI):
     
     # Set orchestrator in routes
     routes.set_orchestrator(_orchestrator)
+    
+    # Initialize health checker
+    health_checker = SystemHealthChecker(
+        registry=registry,
+        state_store=state_store,
+        message_broker=None  # Could add message broker later
+    )
+    routes.set_health_checker(health_checker)
+    
+    # Start metrics server if enabled
+    if settings.ENABLE_METRICS:
+        try:
+            start_metrics_server(settings.METRICS_PORT)
+            logger.info("Metrics server started", port=settings.METRICS_PORT)
+        except Exception as e:
+            logger.warning("Failed to start metrics server", error=str(e))
+    
+    # Initialize dashboard
+    dashboard = MonitoringDashboard(health_checker=health_checker)
+    create_dashboard_routes(app, dashboard)
     
     logger.info("Orchestrator engine initialized")
     
