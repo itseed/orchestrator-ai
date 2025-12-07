@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   orchestrator:
@@ -82,11 +82,11 @@ services:
     ports:
       - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
-      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
     restart: unless-stopped
     networks:
       - orchestrator-network
