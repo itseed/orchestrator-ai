@@ -18,46 +18,64 @@
 orchestrator-ai/
 ├── docs/                      # เอกสาร
 │   ├── DESIGN.md             # เอกสารออกแบบระบบ
-│   └── ARCHITECTURE.md       # เอกสารสถาปัตยกรรม
+│   ├── ARCHITECTURE.md       # เอกสารสถาปัตยกรรม
+│   ├── DEVELOPMENT_PLAN.md   # แผนการพัฒนาแบบละเอียด
+│   ├── WORKFLOW_EXAMPLES.md  # ตัวอย่าง workflow
+│   └── QUICK_START.md        # Quick Start Guide
 ├── orchestrator/             # Core orchestrator engine
 │   ├── __init__.py
-│   ├── engine.py            # Orchestrator engine
-│   ├── planner.py           # Task planner
-│   ├── selector.py          # Agent selector
-│   └── executor.py          # Workflow executor
+│   ├── engine.py            # Orchestrator engine (in progress)
+│   ├── planner.py           # Task planner ✅
+│   ├── selector.py          # Agent selector ✅
+│   ├── executor.py          # Workflow executor (pending)
+│   ├── templates.py         # Workflow templates ✅
+│   └── resource_estimator.py # Resource estimation ✅
 ├── agents/                   # Agent implementations
-│   ├── base.py              # Base agent class
-│   ├── registry.py          # Agent registry
+│   ├── __init__.py
+│   ├── base.py              # Base agent class ✅
+│   ├── registry.py          # Agent registry ✅
 │   └── specialized/         # Specialized agents
-│       ├── research_agent.py
-│       ├── code_agent.py
-│       └── ...
-├── messaging/                # Message broker
+│       ├── __init__.py
+│       ├── echo_agent.py    # Echo agent for testing ✅
+│       ├── research_agent.py (pending)
+│       └── code_agent.py    (pending)
+├── messaging/                # Message broker (pending)
 │   ├── __init__.py
 │   ├── broker.py
 │   └── message.py
-├── state/                    # State management
+├── state/                    # State management (pending)
 │   ├── __init__.py
 │   ├── store.py
 │   └── snapshot.py
 ├── api/                      # API layer
 │   ├── __init__.py
-│   ├── routes.py
-│   └── models.py
+│   ├── main.py              # FastAPI app ✅
+│   ├── routes.py            (pending)
+│   └── models.py            (pending)
 ├── monitoring/               # Monitoring & observability
-│   ├── metrics.py
-│   ├── logger.py
-│   └── dashboard.py
+│   ├── __init__.py
+│   ├── logger.py            # Structured logging ✅
+│   ├── metrics.py           (pending)
+│   └── dashboard.py         (pending)
 ├── config/                   # Configuration
-│   └── settings.py
+│   ├── __init__.py
+│   └── settings.py          # Settings management ✅
+├── cli/                      # CLI tools (pending)
+│   └── __init__.py
 ├── tests/                    # Tests
-│   ├── unit/
-│   └── integration/
-├── requirements.txt          # Python dependencies
-├── Dockerfile               # Docker configuration
-├── docker-compose.yml       # Docker compose
+│   ├── __init__.py
+│   ├── unit/                # Unit tests
+│   │   ├── test_base_agent.py ✅
+│   │   └── test_registry.py ✅
+│   └── integration/         # Integration tests (pending)
+├── requirements.txt          # Python dependencies ✅
+├── Dockerfile               # Docker configuration ✅
+├── docker-compose.yml       # Docker compose ✅
+├── main.py                  # Application entry point ✅
 └── README.md               # This file
 ```
+
+**Legend**: ✅ = Completed | (pending) = To be implemented
 
 ## ความสามารถของระบบ (System Capabilities)
 
@@ -128,27 +146,42 @@ docker-compose up -d
 ### Basic Example
 
 ```python
-from orchestrator import OrchestratorEngine
+from orchestrator import TaskPlanner
 from agents.registry import AgentRegistry
+from agents.specialized import EchoAgent
 
-# Initialize orchestrator
-orchestrator = OrchestratorEngine()
+# Initialize components
+planner = TaskPlanner()
+registry = AgentRegistry()
 
 # Register agents
-registry = AgentRegistry()
-registry.register_agent("research_agent", ResearchAgent())
-registry.register_agent("analysis_agent", AnalysisAgent())
+echo_agent = EchoAgent()
+registry.register(echo_agent)
 
-# Submit task
+# Create a task
 task = {
-    "type": "research_and_analyze",
-    "query": "Latest trends in AI",
-    "output_format": "report"
+    "type": "simple",
+    "input": {"message": "Hello, World!"}
 }
 
-result = await orchestrator.execute(task)
-print(result)
+# Plan workflow
+workflow = await planner.plan(task)
+
+# Execute (when executor is ready)
+# result = await orchestrator.execute(task)
 ```
+
+### Current Implementation Status
+
+ระบบปัจจุบันรองรับ:
+- ✅ Configuration Management
+- ✅ Structured Logging
+- ✅ Agent Registration & Discovery
+- ✅ Task Planning & Workflow Decomposition
+- ✅ Resource Estimation
+- ✅ Agent Selection (Core)
+
+**Note**: Orchestrator Engine และ Workflow Executor ยังอยู่ระหว่างการพัฒนา
 
 ### API Usage
 
@@ -197,11 +230,11 @@ class MyCustomAgent(BaseAgent):
 ## Architecture Overview
 
 ดูเอกสารเพิ่มเติมได้ที่:
-- [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) - **แผนการพัฒนาแบบละเอียด** ⭐
-- [.context/DESIGN.md](.context/DESIGN.md) - เอกสารออกแบบระบบ
-- [.context/ARCHITECTURE.md](.context/ARCHITECTURE.md) - เอกสารสถาปัตยกรรม
-- [.context/WORKFLOW_EXAMPLES.md](.context/WORKFLOW_EXAMPLES.md) - ตัวอย่าง workflow
-- [.context/QUICK_START.md](.context/QUICK_START.md) - Quick Start Guide
+- [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md) - **แผนการพัฒนาแบบละเอียด** ⭐
+- [docs/DESIGN.md](docs/DESIGN.md) - เอกสารออกแบบระบบ
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - เอกสารสถาปัตยกรรม
+- [docs/WORKFLOW_EXAMPLES.md](docs/WORKFLOW_EXAMPLES.md) - ตัวอย่าง workflow
+- [docs/QUICK_START.md](docs/QUICK_START.md) - Quick Start Guide
 
 ## การทดสอบ (Testing)
 
@@ -232,10 +265,60 @@ MIT License
 
 ## Roadmap
 
-- [ ] Phase 1: Core Orchestrator Engine (4-6 สัปดาห์)
-- [ ] Phase 2: Multi-Agent Support (6-8 สัปดาห์)
-- [ ] Phase 3: Advanced Features (4-6 สัปดาห์)
-- [ ] Phase 4: Production Ready (4-6 สัปดาห์)
+### Phase 1: Core Orchestrator Engine (4-6 สัปดาห์) - 🚧 In Progress
 
-**ดูแผนการพัฒนาแบบละเอียด**: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
+- [x] **Week 1**: Project Setup & Foundation ✅
+  - [x] Project structure setup
+  - [x] Configuration management
+  - [x] Logging system
+  
+- [x] **Week 2**: Base Agent & Registry ✅
+  - [x] BaseAgent abstract class
+  - [x] AgentRegistry implementation
+  - [x] EchoAgent for testing
+  - [x] Unit tests
+  
+- [x] **Week 3**: Task Planner ✅
+  - [x] WorkflowGraph & WorkflowStep
+  - [x] Task decomposition
+  - [x] Workflow templates
+  - [x] Resource estimation
+  
+- [ ] **Week 4**: Agent Selector 🚧
+  - [x] AgentSelector core
+  - [x] Capability matching
+  - [x] Agent scoring algorithm
+  - [ ] Load balancing (in progress)
+  - [ ] Cost optimization (in progress)
+  
+- [ ] **Week 5**: Workflow Executor
+- [ ] **Week 6**: Orchestrator Engine & API
+
+### Phase 2: Multi-Agent Support (6-8 สัปดาห์) - 📅 Planned
+- [ ] Message Broker & Communication
+- [ ] Parallel Execution
+- [ ] State Management
+- [ ] Agent Communication
+
+### Phase 3: Advanced Features (4-6 สัปดาห์) - 📅 Planned
+- [ ] Error Recovery & Resilience
+- [ ] Monitoring & Observability
+- [ ] Performance Optimization
+
+### Phase 4: Production Ready (4-6 สัปดาห์) - 📅 Planned
+- [ ] Security & Authentication
+- [ ] Database & Persistence
+- [ ] CLI Tool
+- [ ] Specialized Agents
+- [ ] Docker & Deployment
+
+**ดูแผนการพัฒนาแบบละเอียด**: [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md)
+
+### ความคืบหน้าล่าสุด
+
+**Last Updated**: 2024-12-07
+
+- ✅ Week 1-3: เสร็จสมบูรณ์
+- 🚧 Week 4: กำลังพัฒนา (Agent Selector - Core completed)
+- 📦 Latest Commit: `bd7aa70` - Week 4: Agent Selector - In Progress
 
